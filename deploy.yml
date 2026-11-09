@@ -1,0 +1,22 @@
+- name: Deploy simple-cicd
+  hosts: localhost
+  connection: local
+  vars:
+    version: "1"
+  tasks:
+    - name: Remove old container if present
+      command: docker rm -f simple-cicd-app
+      failed_when: false
+      changed_when: false
+
+    - name: Start new container
+      command: docker run -d --name simple-cicd-app -p 8082:80 simple-cicd:{{ version }}
+
+    - name: Health check
+      uri:
+        url: http://localhost:8082
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 5
+      delay: 2
