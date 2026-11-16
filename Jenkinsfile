@@ -1,6 +1,11 @@
 pipeline {
     agent any
     stages {
+        stage('Test') {
+            steps {
+                sh 'grep -q "Hello" index.html'
+            }
+        }
         stage('Build Image') {
             steps {
                 sh 'docker build -t simple-cicd:${BUILD_NUMBER} .'
