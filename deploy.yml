@@ -4,18 +4,20 @@
   vars:
     version: "1"
     health_host: "localhost"
+    port: "8082"
+    container: "simple-cicd-app"
   tasks:
     - name: Remove old container if present
-      command: docker rm -f simple-cicd-app
+      command: docker rm -f {{ container }}
       failed_when: false
       changed_when: false
 
     - name: Start new container
-      command: docker run -d --name simple-cicd-app -p 8082:80 simple-cicd:{{ version }}
+      command: docker run -d --name {{ container }} -p {{ port }}:80 simple-cicd:{{ version }}
 
     - name: Health check
       uri:
-        url: http://{{ health_host }}:8082
+        url: http://{{ health_host }}:{{ port }}
         status_code: 200
       register: result
       until: result.status == 200
