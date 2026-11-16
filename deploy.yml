@@ -3,6 +3,7 @@
   connection: local
   vars:
     version: "1"
+    health_host: "localhost"
   tasks:
     - name: Remove old container if present
       command: docker rm -f simple-cicd-app
@@ -14,7 +15,7 @@
 
     - name: Health check
       uri:
-        url: http://localhost:8082
+        url: http://{{ health_host }}:8082
         status_code: 200
       register: result
       until: result.status == 200
